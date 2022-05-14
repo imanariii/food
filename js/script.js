@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-    
+
     // Таймер
 
     const deadLine = '2022-05-27';
@@ -100,4 +100,57 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadLine);
+
+    // Модальное окно
+
+    const modal = document.querySelector('.modal'),
+        modalTrigger = document.querySelectorAll('[data-modal]'),
+        modalClose = document.querySelector('[data-close]');
+
+
+    function modalOpen() {
+         // modal.style.display = "block"; Первый способ
+         modal.classList.add('show');
+         modal.classList.remove('hide');
+         // modal.classList.toggle('show'); Третий способ
+         document.body.style.overflow = 'hidden';
+         clearInterval(modalTimerId);
+    };
+
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', modalOpen);
+    });
+
+    function closeModal() {
+        // modal.style.display = "none"; Первый способ
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        // modal.classList.toggle('show'); Третий способ
+        document.body.style.overflow = '';
+    };
+
+    modalClose.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModal();
+        }
+    });
+
+    const modalTimerId = setTimeout(modalOpen, 10000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
+            modalOpen();
+            window.removeEventListener('scroll', showModalByScroll)
+        } 
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });
